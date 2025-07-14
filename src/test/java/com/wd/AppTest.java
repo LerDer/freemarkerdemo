@@ -48,9 +48,9 @@ public class AppTest extends TestCase {
 		Configuration cfg = new Configuration(new Version("2.3.28"));
 		cfg.setSharedVariable("templates", BeansWrapper.getDefaultInstance().getStaticModels());
 		cfg.setClassForTemplateLoading(AppTest.class, "/templates");
-		try (Writer out = new OutputStreamWriter(new FileOutputStream("demo.java"),
+		try (Writer out = new OutputStreamWriter(new FileOutputStream("demo.js"),
 				StandardCharsets.UTF_8)) {
-			String templatePath = "demo.java.ftl";
+			String templatePath = "demo.ftl";
 			Template template = cfg.getTemplate(templatePath);
 			URL resource = AppTest.class.getClassLoader().getResource("user.json");
 			try (InputStream inputStream = resource.openStream()) {
