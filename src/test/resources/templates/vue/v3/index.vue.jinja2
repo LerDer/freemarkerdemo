@@ -73,7 +73,7 @@
           plain
           icon="Plus"
           @click="handleAdd"
-          v-hasPermi="['{{ moduleName }}:${apiName}:add']"
+          v-hasPermi="['${apiModuleName}:${apiName}:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -83,7 +83,7 @@
           icon="Edit"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['{{ moduleName }}:${apiName}:edit']"
+          v-hasPermi="['${apiModuleName}:${apiName}:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -93,7 +93,7 @@
           icon="Delete"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['{{ moduleName }}:${apiName}:remove']"
+          v-hasPermi="['${apiModuleName}:${apiName}:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -102,7 +102,7 @@
           plain
           icon="Download"
           @click="handleExport"
-          v-hasPermi="['{{ moduleName }}:${apiName}:export']"
+          v-hasPermi="['${apiModuleName}:${apiName}:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
@@ -144,8 +144,8 @@
       {% endfor %}
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['{{ moduleName }}:${apiName}:edit']">修改</el-button>
-          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['{{ moduleName }}:${apiName}:remove']">删除</el-button>
+          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['${apiModuleName}:${apiName}:edit']">修改</el-button>
+          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['${apiModuleName}:${apiName}:remove']">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -333,7 +333,7 @@
 </template>
 
 <script setup name="${className}">
-import { list${classNamePrefix}, get${classNamePrefix}, del${classNamePrefix}, add${classNamePrefix}, update${classNamePrefix} } from "@/api/{{ moduleName }}/${apiName}";
+import { list${classNamePrefix}, get${classNamePrefix}, del${classNamePrefix}, add${classNamePrefix}, update${classNamePrefix} } from "@/api/${apiModuleName}/${apiName}";
 
 const { proxy } = getCurrentInstance();
 {% if dicts %}
@@ -566,7 +566,7 @@ function handle{{ subClassName }}SelectionChange(selection) {
 
 /** 导出按钮操作 */
 function handleExport() {
-  proxy.download('{{ moduleName }}/${apiName}/export', {
+  proxy.download('${apiModuleName}/${apiName}/export', {
     ...queryParams.value
   }, `${apiName}_${new Date().getTime()}.xlsx`);
 }
