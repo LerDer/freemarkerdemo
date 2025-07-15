@@ -1,0 +1,211 @@
+{% set pkField = pkColumn.python_field %}
+{% set pk_field = pkColumn.python_field | camel_to_snake %}
+{% set pkParentheseIndex = pkColumn.column_comment.find("（") %}
+{% set pk_field_comment = pkColumn.column_comment[:pkParentheseIndex] if pkParentheseIndex != -1 else pkColumn.column_comment %}
+{% if dicts %}
+from fastapi import Request
+{% endif %}
+from sqlalchemy.ext.asyncio import AsyncSession
+from typing import List
+from config.constant import CommonConstant
+from exceptions.exception import ServiceException
+from module_admin.entity.vo.common_vo import CrudResponseModel
+{% if dicts %}
+from module_admin.service.dict_service import DictDataService
+{% endif %}
+from ${packageName}.${apiModuleName}.dao.${apiName}_dao import ${className}Dao
+from ${packageName}.${apiModuleName}.entity.vo.${apiName}_vo import Delete${classNamePrefix}Model, ${className}Model, ${className}PageQueryModel
+from utils.common_util import CamelCaseUtil
+from utils.excel_util import ExcelUtil
+
+
+class ${className}Service:
+    """
+    ${tableName}模块服务层
+    """
+
+    @classmethod
+    async def get_${apiName}_list_services(
+        cls, query_db: AsyncSession, query_object: ${className}PageQueryModel, is_page: bool = False
+    ):
+        """
+        获取${tableName}列表信息service
+
+        :param query_db: orm对象
+        :param query_object: 查询参数对象
+        :param is_page: 是否开启分页
+        :return: ${tableName}列表信息对象
+        """
+        ${apiName}_list_result = await ${className}Dao.get_${apiName}_list(query_db, query_object, is_page)
+
+        return ${apiName}_list_result
+
+    {% for column in columns %}
+    {% set parentheseIndex = column.column_comment.find("（") %}
+    {% set comment = column.column_comment[:parentheseIndex] if parentheseIndex != -1 else column.column_comment %}
+    {% if column.unique %}
+    @classmethod
+    async def check_{{ column.python_field | camel_to_snake }}_unique_services(cls, query_db: AsyncSession, page_object: ${className}Model):
+        """
+        检查{{ comment }}是否唯一service
+
+        :param query_db: orm对象
+        :param page_object: ${tableName}对象
+        :return: 校验结果
+        """
+        ${pkColumn.columnName} = -1 if page_object.${pkColumn.columnName} is None else page_object.${pkColumn.columnName}
+        ${apiName} = await ${className}Dao.get_${apiName}_detail_by_info(query_db, ${className}Model({{ column.python_field }}=page_object.{{ column.python_field | camel_to_snake }}))
+        if ${apiName} and ${apiName}.${pkColumn.columnName} != ${pkColumn.columnName}:
+            return CommonConstant.NOT_UNIQUE
+        return CommonConstant.UNIQUE
+    {% if not loop.last %}{{ "\n" }}{% endif %}
+    {% endif %}
+    {% endfor %}
+
+    @classmethod
+    async def add_${apiName}_services(cls, query_db: AsyncSession, page_object: ${className}Model):
+        """
+        新增${tableName}信息service
+
+        :param query_db: orm对象
+        :param page_object: 新增${tableName}对象
+        :return: 新增${tableName}校验结果
+        """
+        {% for column in columns %}
+        {% set parentheseIndex = column.column_comment.find("（") %}
+        {% set comment = column.column_comment[:parentheseIndex] if parentheseIndex != -1 else column.column_comment %}
+        {% if column.unique %}
+        if not await cls.check_{{ column.python_field | camel_to_snake }}_unique_services(query_db, page_object):
+            raise ServiceException(message=f'新增${tableName}{page_object.{{ column.python_field | camel_to_snake }}}失败，{{ comment }}已存在')
+        {% endif %}
+        {% endfor %}
+        try:
+            {% if table.sub %}
+            add_${apiName} = await ${className}Dao.add_${apiName}_dao(query_db, page_object)
+            if add_${apiName}:
+                for sub_table in page_object.{{ subclassName }}_list:
+                    await ${className}Dao.add_{{ subTable.business_name }}_dao(query_db, sub_table)
+            {% else %}
+            await ${className}Dao.add_${apiName}_dao(query_db, page_object)
+            {% endif %}
+            await query_db.commit()
+            return CrudResponseModel(is_success=True, message='新增成功')
+        except Exception as e:
+            await query_db.rollback()
+            raise e
+
+    @classmethod
+    async def edit_${apiName}_services(cls, query_db: AsyncSession, page_object: ${className}Model):
+        """
+        编辑${tableName}信息service
+
+        :param query_db: orm对象
+        :param page_object: 编辑${tableName}对象
+        :return: 编辑${tableName}校验结果
+        """
+        edit_${apiName} = page_object.model_dump(exclude_unset=True, exclude={% raw %}{{% endraw %}{% if table.sub %}'{{ subclassName }}_list', {% endif %}{% for column in columns %}{% if not column.edit and not column.pk and column.column_name not in column_not_edit_show %}'{{ column.python_field | camel_to_snake  }}'{% if not loop.last %}, {% endif %}{% endif %}{% endfor %}{% raw %}}{% endraw %})
+        ${apiName}_info = await cls.${apiName}_detail_services(query_db, page_object.${pkColumn.columnName})
+        if ${apiName}_info.${pkColumn.columnName}:
+            {% for column in columns %}
+            {% set parentheseIndex = column.column_comment.find("（") %}
+            {% set comment = column.column_comment[:parentheseIndex] if parentheseIndex != -1 else column.column_comment %}
+            {% if column.unique %}
+            if not await cls.check_{{ column.python_field | camel_to_snake }}_unique_services(query_db, page_object):
+                raise ServiceException(message=f'修改${tableName}{page_object.{{ column.python_field | camel_to_snake }}}失败，{{ comment }}已存在')
+            {% endif %}
+            {% endfor %}
+            try:
+                await ${className}Dao.edit_${apiName}_dao(query_db, edit_${apiName})
+                {% if table.sub %}
+                for sub_table in ${apiName}_info.{{ subclassName }}_list:
+                    await ${className}Dao.delete_{{ subTable.business_name }}_dao(query_db, sub_table)
+                for sub_table in page_object.{{ subclassName }}_list:
+                    await ${className}Dao.add_{{ subTable.business_name }}_dao(query_db, sub_table)
+                {% endif %}
+                await query_db.commit()
+                return CrudResponseModel(is_success=True, message='更新成功')
+            except Exception as e:
+                await query_db.rollback()
+                raise e
+        else:
+            raise ServiceException(message='${tableName}不存在')
+
+    @classmethod
+    async def delete_${apiName}_services(cls, query_db: AsyncSession, page_object: Delete${classNamePrefix}Model):
+        """
+        删除${tableName}信息service
+
+        :param query_db: orm对象
+        :param page_object: 删除${tableName}对象
+        :return: 删除${tableName}校验结果
+        """
+        if page_object.${pkColumn.columnName}s:
+            ${pkColumn.columnName}_list = page_object.${pkColumn.columnName}s.split(',')
+            try:
+                for ${pkColumn.columnName} in ${pkColumn.columnName}_list:
+                    {% if table.sub %}
+                    ${apiName} = await cls.${apiName}_detail_services(query_db, int(${pkColumn.columnName}))
+                    for sub_table in ${apiName}.{{ subclassName }}_list:
+                        await ${className}Dao.delete_{{ subTable.business_name }}_dao(query_db, sub_table)
+                    {% endif %}
+                    await ${className}Dao.delete_${apiName}_dao(query_db, ${className}Model({{ pkField }}=${pkColumn.columnName}))
+                await query_db.commit()
+                return CrudResponseModel(is_success=True, message='删除成功')
+            except Exception as e:
+                await query_db.rollback()
+                raise e
+        else:
+            raise ServiceException(message='传入{{ pk_field_comment }}为空')
+
+    @classmethod
+    async def ${apiName}_detail_services(cls, query_db: AsyncSession, ${pkColumn.columnName}: int):
+        """
+        获取${tableName}详细信息service
+
+        :param query_db: orm对象
+        :param ${pkColumn.columnName}: {{ pk_field_comment }}
+        :return: {{ pk_field_comment }}对应的信息
+        """
+        ${apiName} = await ${className}Dao.get_${apiName}_detail_by_id(query_db, ${pkColumn.columnName}=${pkColumn.columnName})
+        if ${apiName}:
+            result = ${className}Model(**CamelCaseUtil.transform_result(${apiName}))
+        else:
+            result = ${className}Model(**dict())
+
+        return result
+
+    @staticmethod
+    async def export_${apiName}_list_services({% if dicts %}request: Request, {% endif %}${apiName}_list: List):
+        """
+        导出${tableName}信息service
+
+        :param ${apiName}_list: ${tableName}信息列表
+        :return: ${tableName}信息对应excel的二进制数据
+        """
+        # 创建一个映射字典，将英文键映射到中文键
+        mapping_dict = {
+            {% for column in columns %}
+            {% set parentheseIndex = column.column_comment.find("（") %}
+            {% set comment = column.column_comment[:parentheseIndex] if parentheseIndex != -1 else column.column_comment %}
+            '{{ column.python_field }}': '{{ comment }}',
+            {% endfor %}
+        }
+        {% if dicts %}
+        {% for dict_type in dicts.split(", ") %}
+        {{ dict_type[1:-1] }}_list = await DictDataService.query_dict_data_list_from_cache_services(
+            request.app.state.redis, dict_type={{ dict_type }}
+        )
+        {{ dict_type[1:-1] }}_option = [dict(label=item.get('dictLabel'), value=item.get('dictValue')) for item in {{ dict_type[1:-1] }}_list]
+        {{ dict_type[1:-1] }}_option_dict = {item.get('value'): item for item in {{ dict_type[1:-1] }}_option}
+        {% endfor %}
+        for item in ${apiName}_list:
+            {% for column in columns %}
+            {% if column.dict_type %}
+            if str(item.get('{{ column.python_field }}')) in {{ column.dict_type }}_option_dict.keys():
+                item['{{ column.python_field }}'] = {{ column.dict_type }}_option_dict.get(str(item.get('{{ column.python_field }}'))).get('label')
+            {% endif %}
+            {% endfor %}
+        {% endif %}
+        binary_data = ExcelUtil.export_list2excel(${apiName}_list, mapping_dict)
+
+        return binary_data
