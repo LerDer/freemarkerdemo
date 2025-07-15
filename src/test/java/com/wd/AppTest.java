@@ -48,7 +48,7 @@ public class AppTest extends TestCase {
 		Configuration cfg = new Configuration(new Version("2.3.28"));
 		cfg.setSharedVariable("templates", BeansWrapper.getDefaultInstance().getStaticModels());
 		cfg.setClassForTemplateLoading(AppTest.class, "/templates");
-		try (Writer out = new OutputStreamWriter(new FileOutputStream("demo.js"),
+		try (Writer out = new OutputStreamWriter(new FileOutputStream("demo.py"),
 				StandardCharsets.UTF_8)) {
 			String templatePath = "demo.ftl";
 			Template template = cfg.getTemplate(templatePath);
