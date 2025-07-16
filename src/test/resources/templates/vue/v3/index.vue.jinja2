@@ -169,24 +169,24 @@
       {% set comment = column.column_comment[:parentheseIndex] if parentheseIndex != -1 else column.column_comment %}
       {% set dictType = column.dict_type %}
       {% if column.html_type == "input" %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <el-input v-model="form.{{ field }}" placeholder="请输入{{ comment }}" />
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <el-input v-model="form.${field.fieldName}" placeholder="请输入{{ comment }}" />
       </el-form-item>
       {% elif column.html_type == "imageUpload" %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <image-upload v-model="form.{{ field }}"/>
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <image-upload v-model="form.${field.fieldName}"/>
       </el-form-item>
       {% elif column.html_type == "fileUpload" %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <file-upload v-model="form.{{ field }}"/>
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <file-upload v-model="form.${field.fieldName}"/>
       </el-form-item>
       {% elif column.html_type == "editor" %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <editor v-model="form.{{ field }}" :min-height="192"/>
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <editor v-model="form.${field.fieldName}" :min-height="192"/>
       </el-form-item>
       {% elif column.html_type == "select" and dictType %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <el-select v-model="form.{{ field }}" placeholder="请选择{{ comment }}">
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <el-select v-model="form.${field.fieldName}" placeholder="请选择{{ comment }}">
           <el-option
             v-for="dict in {{ dictType }}"
             :key="dict.value"
@@ -200,14 +200,14 @@
         </el-select>
       </el-form-item>
       {% elif column.html_type == "select" and not dictType %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <el-select v-model="form.{{ field }}" placeholder="请选择{{ comment }}">
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <el-select v-model="form.${field.fieldName}" placeholder="请选择{{ comment }}">
           <el-option label="请选择字典生成" value="" />
         </el-select>
       </el-form-item>
       {% elif column.html_type == "checkbox" and dictType %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <el-checkbox-group v-model="form.{{ field }}">
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <el-checkbox-group v-model="form.${field.fieldName}">
           <el-checkbox
             v-for="dict in {{ dictType }}"
             :key="dict.value"
@@ -217,14 +217,14 @@
         </el-checkbox-group>
       </el-form-item>
       {% elif column.html_type == "checkbox" and not dictType %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <el-checkbox-group v-model="form.{{ field }}">
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <el-checkbox-group v-model="form.${field.fieldName}">
           <el-checkbox>请选择字典生成</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
       {% elif column.html_type == "radio" and dictType %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <el-radio-group v-model="form.{{ field }}">
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <el-radio-group v-model="form.${field.fieldName}">
           <el-radio
             v-for="dict in {{ dictType }}"
             :key="dict.value"
@@ -238,23 +238,23 @@
         </el-radio-group>
       </el-form-item>
       {% elif column.html_type == "radio" and not dictType %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <el-radio-group v-model="form.{{ field }}">
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <el-radio-group v-model="form.${field.fieldName}">
           <el-radio label="请选择字典生成" value="" />
         </el-radio-group>
       </el-form-item>
       {% elif column.html_type == "datetime" %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
         <el-date-picker clearable
-          v-model="form.{{ field }}"
+          v-model="form.${field.fieldName}"
           type="date"
           value-format="YYYY-MM-DD"
           placeholder="请选择{{ comment }}">
         </el-date-picker>
       </el-form-item>
       {% elif column.html_type == "textarea" %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <el-input v-model="form.{{ field }}" type="textarea" placeholder="请输入内容" />
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <el-input v-model="form.${field.fieldName}" type="textarea" placeholder="请输入内容" />
       </el-form-item>
       {% endif %}
       {% endif %}
@@ -265,13 +265,13 @@
       <el-divider content-position="center">{{ subTable.functionName }}信息</el-divider>
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
-          <el-button type="primary" icon="Plus" @click="handleAdd{{ subClassName }}">添加</el-button>
+          <el-button type="primary" icon="Plus" @click="handleAdd${subclassName}">添加</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button type="danger" icon="Delete" @click="handleDelete{{ subClassName }}">删除</el-button>
+          <el-button type="danger" icon="Delete" @click="handleDelete${subclassName}">删除</el-button>
         </el-col>
       </el-row>
-      <el-table :data="{{ subclassName }}List" :row-class-name="row{{ subClassName }}Index" @selection-change="handle{{ subClassName }}SelectionChange" ref="{{ subclassName }}">
+      <el-table :data="${subclassName}List" :row-class-name="row${subclassName}Index" @selection-change="handle${subclassName}SelectionChange" ref="${subclassName}">
         <el-table-column type="selection" width="50" align="center" />
         <el-table-column label="序号" align="center" prop="index" width="50"/>
         {% for column in subTable.columns %}
@@ -343,14 +343,14 @@ const { {{ dictsNoSymbol }} } = proxy.useDict({{ dicts }});
 
 const ${apiName}List = ref([]);
 {% if table.sub %}
-const {{ subclassName }}List = ref([]);
+const ${subclassName}List = ref([]);
 {% endif %}
 const open = ref(false);
 const loading = ref(true);
 const showSearch = ref(true);
 const ids = ref([]);
 {% if table.sub %}
-const checked{{ subClassName }} = ref([]);
+const checked${subclassName} = ref([]);
 {% endif %}
 const single = ref(true);
 const multiple = ref(true);
@@ -431,7 +431,7 @@ function reset() {
     {% endfor %}
   };
   {% if table.sub %}
-  {{ subclassName }}List.value = [];
+  ${subclassName}List.value = [];
   {% endif %}
   proxy.resetForm("${apiName}Ref");
 }
@@ -480,7 +480,7 @@ function handleUpdate(row) {
     {% endif %}
     {% endfor %}
     {% if table.sub %}
-    {{ subclassName }}List.value = response.data.{{ subclassName }}List;
+    ${subclassName}List.value = response.data.${subclassName}List;
     {% endif %}
     open.value = true;
     title.value = "修改${tableName}";
@@ -497,7 +497,7 @@ function submitForm() {
       {% endif %}
       {% endfor %}
       {% if table.sub %}
-      form.value.{{ subclassName }}List = {{ subclassName }}List.value;
+      form.value.${subclassName}List = ${subclassName}List.value;
       {% endif %}
       if (form.value.{{ pkColumn.python_field }} != null) {
         update${classNamePrefix}(form.value).then(response => {
@@ -529,12 +529,12 @@ function handleDelete(row) {
 
 {% if table.sub %}
 /** {{ subTable.functionName }}序号 */
-function row{{ subClassName }}Index({ row, rowIndex }) {
+function row${subclassName}Index({ row, rowIndex }) {
   row.index = rowIndex + 1;
 }
 
 /** {{ subTable.functionName }}添加按钮操作 */
-function handleAdd{{ subClassName }}() {
+function handleAdd${subclassName}() {
   let obj = {};
   {% for column in subTable.columns %}
   {% if column.pk or column.python_field == subTableFkclassName %}
@@ -542,25 +542,25 @@ function handleAdd{{ subClassName }}() {
   obj.{{ column.python_field }} = "";
   {% endif %}
   {% endfor %}
-  {{ subclassName }}List.value.push(obj);
+  ${subclassName}List.value.push(obj);
 }
 
 /** {{ subTable.functionName }}删除按钮操作 */
-function handleDelete{{ subClassName }}() {
-  if (checked{{ subClassName }}.value.length == 0) {
+function handleDelete${subclassName}() {
+  if (checked${subclassName}.value.length == 0) {
     proxy.$modal.msgError("请先选择要删除的{{ subTable.functionName }}数据");
   } else {
-    const {{ subclassName }}s = {{ subclassName }}List.value;
-    const checked{{ subClassName }}s = checked{{ subClassName }}.value;
-    {{ subclassName }}List.value = {{ subclassName }}s.filter(function(item) {
-      return checked{{ subClassName }}s.indexOf(item.index) == -1
+    const ${subclassName}s = ${subclassName}List.value;
+    const checked${subclassName}s = checked${subclassName}.value;
+    ${subclassName}List.value = ${subclassName}s.filter(function(item) {
+      return checked${subclassName}s.indexOf(item.index) == -1
     });
   }
 }
 
 /** 复选框选中数据 */
-function handle{{ subClassName }}SelectionChange(selection) {
-  checked{{ subClassName }}.value = selection.map(item => item.index)
+function handle${subclassName}SelectionChange(selection) {
+  checked${subclassName}.value = selection.map(item => item.index)
 }
 {% endif %}
 

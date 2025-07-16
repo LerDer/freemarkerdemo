@@ -172,24 +172,24 @@
         <treeselect v-model="form.{{ treeParentCode }}" :options="${apiName}Options" :normalizer="normalizer" placeholder="请选择{{ comment }}" />
       </el-form-item>
       {% elif column.html_type == "input" %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <el-input v-model="form.{{ field }}" placeholder="请输入{{ comment }}" />
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <el-input v-model="form.${field.fieldName}" placeholder="请输入{{ comment }}" />
       </el-form-item>
       {% elif column.html_type == "imageUpload" %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <image-upload v-model="form.{{ field }}"/>
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <image-upload v-model="form.${field.fieldName}"/>
       </el-form-item>
       {% elif column.html_type == "fileUpload" %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <file-upload v-model="form.{{ field }}"/>
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <file-upload v-model="form.${field.fieldName}"/>
       </el-form-item>
       {% elif column.html_type == "editor" %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <editor v-model="form.{{ field }}" :min-height="192"/>
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <editor v-model="form.${field.fieldName}" :min-height="192"/>
       </el-form-item>
       {% elif column.html_type == "select" and dictType %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <el-select v-model="form.{{ field }}" placeholder="请选择{{ comment }}">
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <el-select v-model="form.${field.fieldName}" placeholder="请选择{{ comment }}">
           <el-option
             v-for="dict in dict.type.{{ dictType }}"
             :key="dict.value"
@@ -203,14 +203,14 @@
         </el-select>
       </el-form-item>
       {% elif column.html_type == "select" and not dictType %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <el-select v-model="form.{{ field }}" placeholder="请选择{{ comment }}">
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <el-select v-model="form.${field.fieldName}" placeholder="请选择{{ comment }}">
           <el-option label="请选择字典生成" value="" />
         </el-select>
       </el-form-item>
       {% elif column.html_type == "checkbox" and dictType %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <el-checkbox-group v-model="form.{{ field }}">
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <el-checkbox-group v-model="form.${field.fieldName}">
           <el-checkbox
             v-for="dict in dict.type.{{ dictType }}"
             :key="dict.value"
@@ -220,14 +220,14 @@
         </el-checkbox-group>
       </el-form-item>
       {% elif column.html_type == "checkbox" and not dictType %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <el-checkbox-group v-model="form.{{ field }}">
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <el-checkbox-group v-model="form.${field.fieldName}">
           <el-checkbox>请选择字典生成</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
       {% elif column.html_type == "radio" and dictType %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <el-radio-group v-model="form.{{ field }}">
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <el-radio-group v-model="form.${field.fieldName}">
           <el-radio
             v-for="dict in dict.type.{{ dictType }}"
             :key="dict.value"
@@ -241,23 +241,23 @@
         </el-radio-group>
       </el-form-item>
       {% elif column.html_type == "radio" and not dictType %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <el-radio-group v-model="form.{{ field }}">
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <el-radio-group v-model="form.${field.fieldName}">
           <el-radio label="请选择字典生成" value="" />
         </el-radio-group>
       </el-form-item>
       {% elif column.html_type == "datetime" %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
         <el-date-picker clearable
-          v-model="form.{{ field }}"
+          v-model="form.${field.fieldName}"
           type="date"
           value-format="yyyy-MM-d"
           placeholder="请选择{{ comment }}">
         </el-date-picker>
       </el-form-item>
       {% elif column.html_type == "textarea" %}
-      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="{{ field }}">
-        <el-input v-model="form.{{ field }}" type="textarea" placeholder="请输入内容" />
+      <el-form-item v-if="renderField({{ column.insert | lower }}, {{ column.edit | lower }})" label="{{ comment }}" prop="${field.fieldName}">
+        <el-input v-model="form.${field.fieldName}" type="textarea" placeholder="请输入内容" />
       </el-form-item>
       {% endif %}
       {% endif %}
