@@ -62,6 +62,53 @@
     "update_by": "lww",
     "update_time": "2025-07-16 12:08:51",
     "version": "1.0.0",
+    "dbType": "mysql",
+    "column_not_add_show": [
+        "create_by",
+        "create_time"
+    ],
+    "column_not_edit_show": [
+        "update_by",
+        "update_time"
+    ],
+    "column_not_edit": [
+        "id",
+        "create_by",
+        "create_time",
+        "del_flag"
+    ],
+    "column_not_list": [
+        "id",
+        "create_by",
+        "create_time",
+        "del_flag",
+        "update_by",
+        "update_time"
+    ],
+    "column_not_query": [
+        "id",
+        "create_by",
+        "create_time",
+        "del_flag",
+        "update_by",
+        "update_time",
+        "remark"
+    ],
+    "base_entity": [
+        "create_by",
+        "create_time",
+        "update_by",
+        "update_time"
+    ],
+    "tree_entity": [
+        "parentName",
+        "parentId",
+        "orderNum",
+        "ancestors",
+        "children"
+    ],
+    "doImportList": ["from sqlalchemy import Column, String,"],
+    "voImportList":[],
     "pkColumn": {
         "capPythonField": "Id",
         "cap_python_field": "Id",
