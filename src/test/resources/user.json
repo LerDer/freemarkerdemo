@@ -11,6 +11,36 @@
     "isOverride": true,
     "packageName": "module_admin",
     "dbType": "mysql",
+    "permissionPrefix": "system:user",
+    "FullClassName": "SysUser",
+    "fullClassName": "sysUser",
+    "author": "lww",
+    "moduleFilePath": "/Users/lww/Desktop/git/RuoYi-Vue3-FastAPI/ruoyi-fastapi-backend/module_admin",
+    "tableComment": "用户信息表",
+    "updateTime": "2025-07-16 04:56:55",
+    "hasBigDecimalField": false,
+    "tablePrefix": "sys_",
+    "createTime": "2025-07-16 04:56:55",
+    "hasTimeField": true,
+    "sqlTablesIndex": [
+        {
+            "cardinality": 2,
+            "collation": "A",
+            "columnName": "user_id",
+            "comment": "",
+            "indexComment": "",
+            "indexName": "PRIMARY",
+            "indexType": "BTREE",
+            "isVisible": "YES",
+            "nonUnique": 0,
+            "nullable": "",
+            "seqInIndex": 1,
+            "tableName": "sys_user"
+        }
+    ],
+    "dictCodes": [
+        "sys_user_sex"
+    ],
     "fieldConfigs": [
         {
             "isNotNull": false,
@@ -454,35 +484,5 @@
             "fieldType": "str",
             "columnName": "remark"
         }
-    ],
-    "permissionPrefix": "system:user",
-    "FullClassName": "SysUser",
-    "fullClassName": "sysUser",
-    "dictCodes": [
-        "sys_user_sex"
-    ],
-    "author": "lww",
-    "moduleFilePath": "/Users/lww/Desktop/git/RuoYi-Vue3-FastAPI/ruoyi-fastapi-backend/module_admin",
-    "tableComment": "用户信息表",
-    "updateTime": "2025-07-16 04:56:55",
-    "hasBigDecimalField": false,
-    "tablePrefix": "sys_",
-    "createTime": "2025-07-16 04:56:55",
-    "sqlTablesIndex": [
-        {
-            "cardinality": 2,
-            "collation": "A",
-            "columnName": "user_id",
-            "comment": "",
-            "indexComment": "",
-            "indexName": "PRIMARY",
-            "indexType": "BTREE",
-            "isVisible": "YES",
-            "nonUnique": 0,
-            "nullable": "",
-            "seqInIndex": 1,
-            "tableName": "sys_user"
-        }
-    ],
-    "hasTimeField": true
+    ]
 }
