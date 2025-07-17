@@ -107,6 +107,7 @@
         "ancestors",
         "children"
     ],
+    "usable_column_list": ["parentId", "orderNum", "remark"],
     "doImportList": ["from sqlalchemy import Column, String,"],
     "voImportList":[],
     "pkColumn": {
