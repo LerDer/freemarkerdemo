@@ -1,49 +1,52 @@
-package ${packageName}.domain;
+package ${packageName}.entity;
 
-<#list columns as column>
-#if($column.javaField=='tenantId')
-#set($IsTenant=1)
-#end
-#end
-#if($IsTenant==1)
-import org.dromara.common.tenant.core.TenantEntity;
-#else
-import org.dromara.common.mybatis.core.domain.BaseEntity;
-#end
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
+<#if hasDecimalField>
+import java.math.BigDecimal;
+</#if>
+<#if hasTimeField>
+import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+</#if>
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-#foreach ($import in $importList)
-import ${import};
-#end
 
-import java.io.Serial;
 
 /**
  * ${functionName}对象 ${tableName}
  *
  * @author ${author}
- * @date ${datetime}
+ * @date ${createTime}
  */
-#if($IsTenant==1)
-#set($Entity="TenantEntity")
-#else
-#set($Entity="BaseEntity")
-#end
 @Data
-@EqualsAndHashCode(callSuper = true)
 @TableName("${tableName}")
-public class ${ClassName} extends ${Entity} {
+@ApiModel(value = "BusinessName 对象", description = "${functionName}")
+public class ${BusinessName} extends ${Entity} {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+private static final long serialVersionUID = 1L;
+
+<#if pkColumn??>
+@ApiModelProperty(value = "${pkColumn.columnComment}")
+@TableId(value = "${pkColumn.columnName}", type = IdType.AUTO)
+private Long applicationId;
+</#if>
+
 
 <#list columns as column>
-#if(!$table.isSuperColumn($column.javaField))
-    /**
-     * $column.columnComment
-     */
-#if($column.javaField=='delFlag')
+#if(!$table.
+
+isSuperColumn($column.javaField))
+		/**
+		 * $column.columnComment
+		 */
+		#if($column.javaField=='delFlag')
     @TableLogic
 #end
 #if($column.javaField=='version')
@@ -55,6 +58,6 @@ public class ${ClassName} extends ${Entity} {
     private $column.javaType $column.javaField;
 
 #end
-#end
+</#list>
 
 }
