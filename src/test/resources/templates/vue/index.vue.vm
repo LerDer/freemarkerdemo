@@ -266,7 +266,7 @@ const ids = ref<Array<string | number>>([]);
 const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
-#foreach ($column in $columns)
+<#list columns as column>
 #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
 #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
 const dateRange${AttrName} = ref<[DateModelType, DateModelType]>(['', '']);
@@ -282,7 +282,7 @@ const dialog = reactive<DialogOption>({
 });
 
 const initFormData: ${BusinessName}Form = {
-#foreach ($column in $columns)
+<#list columns as column>
 #if($column.insert || $column.edit)
 #if($column.htmlType == "checkbox")
   $column.javaField: []#if($foreach.count != $columns.size()),#end
@@ -297,7 +297,7 @@ const data = reactive<PageData<${BusinessName}Form, ${BusinessName}Query>>({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-#foreach ($column in $columns)
+<#list columns as column>
 #if($column.query)
 #if($column.htmlType != "datetime" || $column.queryType != "BETWEEN")
     $column.javaField: undefined,
@@ -305,7 +305,7 @@ const data = reactive<PageData<${BusinessName}Form, ${BusinessName}Query>>({
 #end
 #end
     params: {
-#foreach ($column in $columns)
+<#list columns as column>
 #if($column.query)
 #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
       $column.javaField: undefined#if($foreach.count != $columns.size()),#end
@@ -315,7 +315,7 @@ const data = reactive<PageData<${BusinessName}Form, ${BusinessName}Query>>({
     }
   },
   rules: {
-#foreach ($column in $columns)
+<#list columns as column>
 #if($column.insert || $column.edit)
 #if($column.required)
 #set($parentheseIndex=$column.columnComment.indexOf("（"))
@@ -338,13 +338,13 @@ const { queryParams, form, rules } = toRefs(data);
 /** 查询${functionName}列表 */
 const getList = async () => {
   loading.value = true;
-#foreach ($column in $columns)
+<#list columns as column>
 #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
   queryParams.value.params = {};
 #break
 #end
 #end
-#foreach ($column in $columns)
+<#list columns as column>
 #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
 #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
   proxy?.addDateRange(queryParams.value, dateRange${AttrName}.value, '${AttrName}');
@@ -376,7 +376,7 @@ const handleQuery = () => {
 
 /** 重置按钮操作 */
 const resetQuery = () => {
-#foreach ($column in $columns)
+<#list columns as column>
 #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
 #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
   dateRange${AttrName}.value = ['', ''];
@@ -406,7 +406,7 @@ const handleUpdate = async (row?: ${BusinessName}VO) => {
   const _${pkColumn.javaField} = row?.${pkColumn.javaField} || ids.value[0]
   const res = await get${BusinessName}(_${pkColumn.javaField});
   Object.assign(form.value, res.data);
-#foreach ($column in $columns)
+<#list columns as column>
   #if($column.htmlType == "checkbox")
   form.value.$column.javaField = form.value.${column.javaField}.split(",");
   #end
@@ -420,7 +420,7 @@ const submitForm = () => {
   ${businessName}FormRef.value?.validate(async (valid: boolean) => {
     if (valid) {
       buttonLoading.value = true;
-      #foreach ($column in $columns)
+      <#list columns as column>
         #if($column.htmlType == "checkbox")
         form.value.$column.javaField = form.value.${column.javaField}.join(",");
         #end

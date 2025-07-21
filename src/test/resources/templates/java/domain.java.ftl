@@ -1,6 +1,6 @@
 package ${packageName}.domain;
 
-#foreach ($column in $columns)
+<#list columns as column>
 #if($column.javaField=='tenantId')
 #set($IsTenant=1)
 #end
@@ -38,7 +38,7 @@ public class ${ClassName} extends ${Entity} {
     @Serial
     private static final long serialVersionUID = 1L;
 
-#foreach ($column in $columns)
+<#list columns as column>
 #if(!$table.isSuperColumn($column.javaField))
     /**
      * $column.columnComment

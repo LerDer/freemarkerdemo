@@ -23,7 +23,7 @@ import ${import};
 @AutoMapper(target = ${ClassName}.class, reverseConvertGenerate = false)
 public class ${ClassName}Bo extends BaseEntity {
 
-#foreach ($column in $columns)
+<#list columns as column>
 #if(!$table.isSuperColumn($column.javaField) && ($column.query || $column.insert || $column.edit))
     /**
      * $column.columnComment
