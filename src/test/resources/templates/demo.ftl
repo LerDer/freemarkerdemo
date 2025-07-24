@@ -1,19 +1,130 @@
--- 菜单 SQL
-insert into sys_menu (menu_id, menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_dept, create_by, create_time, update_by, update_time, remark)
-values(${table.menuIds[0]}, '${businessName}', '${parentMenuId}', '1', '${businessName}', '${moduleName}/${businessName}/index', 1, 0, 'C', '0', '0', '${permissionPrefix}:list', '#', 103, 1, sysdate(), null, null, '${businessName}菜单');
+package ${packageName}.entity.bo;
 
--- 按钮 SQL
-insert into sys_menu (menu_id, menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_dept, create_by, create_time, update_by, update_time, remark)
-values(${table.menuIds[1]}, '${businessName}查询', ${table.menuIds[0]}, '1',  '#', '', 1, 0, 'F', '0', '0', '${permissionPrefix}:query',        '#', 103, 1, sysdate(), null, null, '');
+import java.io.Serializable;
+import ${packageName}.entity.${ClassName};
+<#if hasTimeField>
+import java.util.Date;
+import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+</#if>
+<#if hasDecimalField>
+import java.math.BigDecimal;
+</#if>
+<#if isSwagger>
+import io.swagger.v3.oas.annotations.media.Schema;
+</#if>
+<#if isLombok>
+import lombok.Data;
+</#if>
+<#if hasRequiredField>
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.Length;
+</#if>
 
-insert into sys_menu (menu_id, menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_dept, create_by, create_time, update_by, update_time, remark)
-values(${table.menuIds[2]}, '${businessName}新增', ${table.menuIds[0]}, '2',  '#', '', 1, 0, 'F', '0', '0', '${permissionPrefix}:add',          '#', 103, 1, sysdate(), null, null, '');
+/**
+* <p>
+* ${businessName!}
+* </p>
+*
+* @author ${author}
+* @since ${createTime}
+*/
+<#if isLombok>
+@Data
+</#if>
+<#if isSwagger>
+@Schema(name = "${ClassName}UpdateBO对象" , description = "${businessName!}修改对象" )
+</#if>
+public class ${ClassName}UpdateBO implements Serializable {
 
-insert into sys_menu (menu_id, menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_dept, create_by, create_time, update_by, update_time, remark)
-values(${table.menuIds[3]}, '${businessName}修改', ${table.menuIds[0]}, '3',  '#', '', 1, 0, 'F', '0', '0', '${permissionPrefix}:edit',         '#', 103, 1, sysdate(), null, null, '');
+    private static final long serialVersionUID = 1L;
+<#-- ----------  BEGIN 字段循环遍历  ---------->
+<#list columns as column>
 
-insert into sys_menu (menu_id, menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_dept, create_by, create_time, update_by, update_time, remark)
-values(${table.menuIds[4]}, '${businessName}删除', ${table.menuIds[0]}, '4',  '#', '', 1, 0, 'F', '0', '0', '${permissionPrefix}:remove',       '#', 103, 1, sysdate(), null, null, '');
+	<#if column.isEdit >
+		<#if column.columnComment != "">
+			<#if isSwagger>
+    @Schema(description = "${column.columnComment}"<#if column.defaultValue != "">, defaultValue = "${column.defaultValue}"</#if>)
+			<#else>
+    /**
+    * ${column.columnComment}
+    */
+			</#if>
+		</#if>
+		<#if column.isPk>
+			<#if column.javaType=='String'>
+    @NotBlank(message = "${column.columnComment}不能为空")
+            	<#if column.columnLength?? && column.columnLength gt 0>
+    @Length(max = ${column.columnLength}, message = "${column.columnComment}长度不能超过 ${column.columnLength}")
+            	</#if>
+            <#else>
+    @NotNull(message = "${column.columnComment}不能为空")
+            </#if>
+        <#else>
+            <#if column.isRequired>
+                <#if column.javaType=='String'>
+    @NotBlank(message = "${column.columnComment}不能为空")
+                    <#if column.columnLength?? && column.columnLength gt 0>
+    @Length(max = ${column.columnLength}, message = "${column.columnComment}长度不能超过 ${column.columnLength}")
+                    </#if>
+                <#else>
+    @NotNull(message = "${column.columnComment}不能为空")
+                </#if>
+            </#if>
+		</#if>
+		<#if column.javaType=='Date' || column.javaType=='LocalDateTime'>
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss" , timezone = "GMT+8" )
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss" )
+    private ${column.javaType} ${column.javaField};
+		<#else>
+    private ${column.javaType} ${column.javaField};
+		</#if>
+	</#if>
+</#list>
 
-insert into sys_menu (menu_id, menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_dept, create_by, create_time, update_by, update_time, remark)
-values(${table.menuIds[5]}, '${businessName}导出', ${table.menuIds[0]}, '5',  '#', '', 1, 0, 'F', '0', '0', '${permissionPrefix}:export',       '#', 103, 1, sysdate(), null, null, '');
+    public static ${ClassName} convert(${ClassName}UpdateBO bo) {
+        ${ClassName} ${className} =new ${ClassName}();
+<#list columns as column>
+	<#if column.isEdit >
+        ${className}.set${column.capJavaField}(bo.get${column.capJavaField}());
+	</#if>
+</#list>
+        return ${className};
+	}
+
+ <#if !isLombok>
+ 	<#list columns as column>
+ 		<#if column.javaType == "boolean">
+		<#assign getprefix="is"/>
+		<#else>
+		<#assign getprefix="get"/>
+		</#if>
+		<#if column.isEdit >
+ 		<#else>
+     public ${column.javaType} ${getprefix}${column.capJavaField}(){
+         return ${column.javaField};
+     }
+
+     public void set${column.capJavaField}(${column.javaType} ${column.javaField}) {
+         this.${column.javaField} = ${column.javaField};
+     }
+ 		</#if>
+ 	</#list>
+ </#if>
+ <#if !isLombok>
+     @Override
+     public String toString() {
+         return "${ClassName}{" +
+ 	<#list columns as column>
+ 		<#if column_index==0>
+         "${column.javaField}=" + ${column.javaField} +
+ 		<#else>
+         ", ${column.javaField}=" + ${column.javaField} +
+ 		</#if>
+ 	</#list>
+         "}";
+     }
+ </#if>
+}
